@@ -51,10 +51,6 @@ for row in rows:
 columns = ['Código', 'Ação', 'Tipo', 'Qtde. Teórica', 'Part. (%)']
 df = pd.DataFrame(data, columns=columns)
 
-# Limpar números com pontos e vírgulas (ex: "476.976.044" → 476976044)
-#df['Qtde. Teórica'] = df['Qtde. Teórica'].str.replace('.', '', regex=False).astype(int)
-#df['Part. (%)'] = df['Part. (%)'].str.replace(',', '.').astype(float)
-
 # Visulizando os resultados
 print(df)
 
@@ -73,6 +69,6 @@ df.to_parquet(file_path)
 print(f"✅ Dados brutos salvos em: {file_path}")
 
 # Enviar para S3
-#s3.upload_file(file_name, bucket_name, f"{raw_prefix}/{file_name}")
+s3.upload_file(file_name, bucket_name, f"{raw_prefix}/{file_name}")
 
 print("✅ Dados salvos no S3!")
