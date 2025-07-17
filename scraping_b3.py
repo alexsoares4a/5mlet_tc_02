@@ -51,9 +51,6 @@ for row in rows:
 columns = ['Código', 'Ação', 'Tipo', 'Qtde. Teórica', 'Part. (%)']
 df = pd.DataFrame(data, columns=columns)
 
-# Visulizando os resultados
-print(df)
-
 # Definir estrutura local
 date_str = datetime.now().strftime("%Y-%m-%d")
 local_raw_path = Path("data/raw/date=" + date_str)
