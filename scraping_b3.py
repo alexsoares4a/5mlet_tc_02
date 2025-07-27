@@ -47,7 +47,7 @@ def scrape_b3_data():
     Realiza o scraping dos dados da B3 usando Playwright,
     processa com BeautifulSoup e retorna um DataFrame.
     """
-    print("Iniciando o scraping de dados da B3...")
+    print("🚀 Iniciando o scraping de dados da B3...")
     with sync_playwright() as p:
         browser = None # Inicializa browser como None para garantir que seja fechado no finally
         try:
@@ -78,10 +78,10 @@ def scrape_b3_data():
             html = page.content()
             return html
         except PlaywrightError as e:
-            print(f"Erro do Playwright durante o scraping: {e}")
+            print(f"❌ Erro do Playwright durante o scraping: {e}")
             return None
         except Exception as e:
-            print(f"Erro inesperado durante o scraping: {e}")
+            print(f"❌ Erro inesperado durante o scraping: {e}")
             return None
         finally:
             if browser:
@@ -99,14 +99,14 @@ def parse_html_to_dataframe(html_content):
     table = soup.find('table', {'class': 'table table-responsive-sm table-responsive-md'})
 
     if not table:
-        print("Erro: Tabela de dados não encontrada na página. Verifique o seletor ou se a estrutura da página mudou.")
+        print("❌ Erro: Tabela de dados não encontrada na página. Verifique o seletor ou se a estrutura da página mudou.")
         return None
 
     rows = table.find_all('tr')
 
     # Verifica se há linhas suficientes (pelo menos cabeçalho e uma linha de dados)
     if len(rows) < 2:
-        print("Aviso: Nenhuma linha de dados encontrada na tabela (apenas cabeçalho ou tabela vazia).")
+        print("⚠️ Aviso: Nenhuma linha de dados encontrada na tabela (apenas cabeçalho ou tabela vazia).")
         return pd.DataFrame(columns=['codigo', 'acao', 'tipo', 'qtde_teorica', 'part_porcentagem'])
 
     data = []
@@ -119,7 +119,7 @@ def parse_html_to_dataframe(html_content):
 
     # Se não houver dados, retorna um DataFrame vazio com as colunas corretas
     if not data:
-        print("Aviso: Nenhum dado de ações extraído da tabela.")
+        print("⚠️ Aviso: Nenhum dado de ações extraído da tabela.")
         return pd.DataFrame(columns=['codigo', 'acao', 'tipo', 'qtde_teorica', 'part_porcentagem'])
 
     # Converter para DataFrame
@@ -144,7 +144,7 @@ def save_to_parquet_and_upload_to_s3(dataframe, local_path, s3_bucket, s3_key):
         dataframe.to_parquet(local_path)
         print(f"✅ Dados brutos salvos localmente em: {local_path}")
     except Exception as e:
-        print(f"Erro ao salvar arquivo Parquet localmente: {e}")
+        print(f"❌ Erro ao salvar arquivo Parquet localmente: {e}")
         return False
 
     try:
@@ -152,7 +152,7 @@ def save_to_parquet_and_upload_to_s3(dataframe, local_path, s3_bucket, s3_key):
         print(f"✅ Dados salvos no S3 em: s3://{s3_bucket}/{s3_key}")
         return True
     except Exception as e:
-        print(f"Erro ao enviar arquivo para S3: {e}")
+        print(f"❌ Erro ao enviar arquivo para S3: {e}")
         return False
     finally:
         print(f"📦 Fim da execução.")
@@ -168,12 +168,12 @@ if __name__ == "__main__":
             if not save_to_parquet_and_upload_to_s3(df, file_path, bucket_name, s3_upload_key):
                 sys.exit(1) # Sai com erro se o upload falhar
         elif df is not None and df.empty:
-            print("Nenhum dado foi extraído. Não será salvo ou enviado ao S3.")
+            print("⚠️ Nenhum dado foi extraído. Não será salvo ou enviado ao S3.")
         else: # df is None
-            print("Falha na análise do HTML, não foi possível criar o DataFrame.")
+            print("❌ Falha na análise do HTML, não foi possível criar o DataFrame.")
             sys.exit(1)
     else:
-        print("Falha no scraping, nenhum conteúdo HTML foi obtido.")
+        print("❌ Falha no scraping, nenhum conteúdo HTML foi obtido.")
         sys.exit(1) # Sai com erro se o scraping falhar
 
     print("🗃️ Processo de scraping da B3 finalizado.")
