@@ -9,7 +9,7 @@ from pathlib import Path
 import sys
 
 # Carregar variáveis do .env
-load_dotenv()
+load_dotenv(override=True) # override=True para garantir que sobrescreva variáveis existentes
 
 # Configuração do S3
 s3 = boto3.client(
@@ -86,13 +86,13 @@ def scrape_b3_data():
         finally:
             if browser:
                 browser.close()
-                print("Browser do Playwright fechado.")
+                print("📥 Browser do Playwright fechado.")
 
 def parse_html_to_dataframe(html_content):
     """
     Analisa o HTML e extrai os dados para um DataFrame Pandas.
     """
-    print("Analisando o conteúdo HTML com BeautifulSoup...")
+    print("🔍 Analisando o conteúdo HTML com BeautifulSoup...")
     soup = BeautifulSoup(html_content, 'html.parser')
 
     # Identificar a tabela correta
@@ -125,14 +125,18 @@ def parse_html_to_dataframe(html_content):
     # Converter para DataFrame
     columns = ['codigo', 'acao', 'tipo', 'qtde_teorica', 'part_porcentagem']
     df = pd.DataFrame(data, columns=columns)
-    
+
+    # Limpeza de dados
+    df['qtde_teorica'] = df['qtde_teorica'].str.replace('.', '', regex=False).astype(int)
+    df['part_porcentagem'] = df['part_porcentagem'].str.replace(',', '.').astype(float)
+
     return df
 
 def save_to_parquet_and_upload_to_s3(dataframe, local_path, s3_bucket, s3_key):
     """
     Salva o DataFrame localmente em Parquet e faz upload para S3.
     """
-    print("Preparando para salvar e enviar para S3...")
+    print("💻 Preparando para salvar e enviar para S3...")
     # Criar diretório local se não existir
     local_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -151,10 +155,7 @@ def save_to_parquet_and_upload_to_s3(dataframe, local_path, s3_bucket, s3_key):
         print(f"Erro ao enviar arquivo para S3: {e}")
         return False
     finally:
-        # Remover o arquivo local após o upload para S3 (limpeza)
-        #if os.path.exists(local_path):
-        #    os.remove(local_path)
-            print(f"🗑️ Arquivo local {local_path} removido.")
+        print(f"📦 Fim da execução.")
 
 # --- Execução Principal ---
 if __name__ == "__main__":
@@ -175,4 +176,4 @@ if __name__ == "__main__":
         print("Falha no scraping, nenhum conteúdo HTML foi obtido.")
         sys.exit(1) # Sai com erro se o scraping falhar
 
-    print("Processo de scraping da B3 finalizado.")
+    print("🗃️ Processo de scraping da B3 finalizado.")
