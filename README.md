@@ -1,12 +1,12 @@
-# 📊 Tech Challenge - Fase 2: Pipeline Batch Bovespa na AWS
+# 📊 Tech Challenge - Fase 2: PIPELINE BATCH IBOVESPA NA AWS
 
-Este repositório contém a implementação do projeto "Tech Challenge" da Fase 2 da Pós-Graduação em Machine Learning Engineering, focado na construção de um pipeline de dados batch robusto e automatizado para o mercado financeiro brasileiro.
+Este repositório contém a implementação do projeto "Tech Challenge" da Fase 2 da Pós-Graduação em Machine Learning Engineering, focado na construção de um pipeline de dados batch automatizado para o mercado financeiro brasileiro.
 
-O objetivo principal é extrair, processar e analisar dados do pregão da B3 (Bolsa de Valores do Brasil) utilizando uma combinação estratégica de serviços da AWS (S3, Glue, Lambda, Athena) e automatizando a ingestão de dados com GitHub Actions.
+O objetivo principal é extrair, processar e analisar dados da Carteira Teórica do IBovespa na B3 (Bolsa de Valores do Brasil) utilizando uma combinação estratégica de serviços da AWS (S3, Glue, Lambda, Athena) e automatizando a ingestão de dados com GitHub Actions.
 
 ## ✨ Funcionalidades Principais
 
-*   **Web Scraping Automatizado:** Coleta diária de dados do pregão da B3, orquestrada por **GitHub Actions**.
+*   **Web Scraping Automatizado:** Coleta diária de dados da Carteira Teórica do IBovespa da B3, orquestrada por **GitHub Actions**.
 *   **Armazenamento em Camadas:** Dados brutos (`raw/`) e refinados (`refined/`) persistidos no Amazon S3, otimizados com particionamento por data.
 *   **ETL Visual com AWS Glue:** Processamento, limpeza e transformação dos dados utilizando o AWS Glue Studio, com o Glue Data Catalog para gerenciamento de metadados.
 *   **Orquestração Orientada a Eventos:** O pipeline de transformação é disparado automaticamente por eventos no S3, coordenados por AWS Lambda e Amazon EventBridge, garantindo a atualização do Glue Data Catalog antes do processamento.
@@ -17,6 +17,9 @@ O objetivo principal é extrair, processar e analisar dados do pregão da B3 (Bo
 
 O pipeline segue uma arquitetura em camadas, totalmente automatizada, desde a coleta dos dados até a disponibilização para análise:
 
+![Arquitetura do Pipeline](img/arquitetura_pipeline.jpg)
+
+```
 [GITHUB ACTIONS]
      ↓ (diariamente às 20h UTC)
 [Web Scraping → S3 raw/date=YYYY-MM-DD/]
@@ -32,7 +35,7 @@ O pipeline segue uma arquitetura em camadas, totalmente automatizada, desde a co
 [S3 refined/date_ingestao=/ticker=/]
      ↓
 [Glue Data Catalog → Athena]
-
+```
 
 ### Detalhamento do Fluxo:
 
@@ -65,7 +68,7 @@ Para replicar e executar este pipeline, siga os passos abaixo:
 
 *   Conta AWS ativa.
 *   Um bucket S3 criado (ex: `ibovespa-bucket-data`) com pastas `raw/` e `refined/`.
-*   Credenciais AWS (`Access Key ID` e `Secret Access Key`) com permissões para:
+*   Credenciais AWS (`Access Key ID`, `Secret Access Key` e `Session Key`) com permissões para:
     *   Escrever no bucket S3.
     *   Criar e gerenciar funções Lambda.
     *   Criar e gerenciar Glue Crawlers e Jobs.
@@ -80,22 +83,29 @@ As credenciais AWS necessárias para o script de scraping são gerenciadas de fo
 2.  Clique em `New repository secret` e adicione as seguintes secrets:
     *   `AWS_ACCESS_KEY_ID`: Sua AWS Access Key ID.
     *   `AWS_SECRET_ACCESS_KEY`: Sua AWS Secret Access Key.
+    *   `AWS_SESSION_TOKEN`: Sua AWS Session Token.
+    *   `S3_BUCKET_NAME`: Nome do seu bucket S3.
+
+`Atenção`: Em ambientes educacionais, como é o caso desse trabalho, as credenciais de sessão são temporárias. Desta forma, você precisará atualizar seu `.env` com as credenciais mais recentes da plataforma de estudante sempre que elas expirarem ou forem renovadas.
 
 ### 📂 Estrutura do Projeto
 
 Clone o repositório e observe a seguinte estrutura:
 
-techchallenge-fase2/
-├── src/
-│   └── scraping_b3.py          # Script principal de scraping
+```
+5mlet_tc_02/
 ├── .github/
 │   └── workflows/
 │       └── scraping-b3.yml     # Workflow do GitHub Actions
+├── data/ 
+│   └── raw/                    # Diretório local temporário para arquivos brutos 
+├── scraping_b3.py              # Script principal de scraping
 ├── requirements.txt            # Dependências Python
 ├── .env.example                # Modelo de variáveis de ambiente
-├── .gitignore
-└── README.md                   # Este arquivo
-
+├── .gitignore                  # Arquivos ignorados pelo Git
+├── README.md  
+└── pipeline_ibovespa_AWS.mp4   # Vídeo de demonstração                  
+```
 
 ### 🏃 Executando o Pipeline
 
