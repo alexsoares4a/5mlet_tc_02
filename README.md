@@ -19,24 +19,6 @@ O pipeline segue uma arquitetura em camadas, totalmente automatizada, desde a co
 
 ![Arquitetura do Pipeline](img/arquitetura_pipeline.jpg)
 
-```
-[GITHUB ACTIONS]
-     ↓ (diariamente às 20h UTC)
-[Web Scraping → S3 raw/date=YYYY-MM-DD/]
-     ↓ (S3 Event)
-[Lambda 1 → Start Glue Crawler]
-     ↓
-[Glue Crawler → Glue Data Catalog]
-     ↓ (Success Event)
-[EventBridge → Lambda 2]
-     ↓
-[Glue Job (Visual ETL)]
-     ↓
-[S3 refined/date_ingestao=/ticker=/]
-     ↓
-[Glue Data Catalog → Athena]
-```
-
 ### Detalhamento do Fluxo:
 
 1.  Um workflow no GitHub Actions executa o script Python de web scraping (`scraping_b3.py`) diariamente.
