@@ -2,7 +2,7 @@ name: "Scraping B3 - Execução Diária"
 
 on:
   schedule:
-    # Executa diariamente às 8h da manhã (UTC)
+    # Executa diariamente às 8h da manhã (UTC) / 5h da manhã (BRT)
     - cron: "0 8 * * *"
   workflow_dispatch: # Para rodar manualmente
 
