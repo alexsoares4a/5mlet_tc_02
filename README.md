@@ -78,15 +78,17 @@ Clone o repositório e observe a seguinte estrutura:
 5mlet_tc_02/
 ├── .github/
 │   └── workflows/
-│       └── scraping-b3.yml     # Workflow do GitHub Actions
+│       └── scraping-b3.yml      # Workflow do GitHub Actions
 ├── data/ 
-│   └── raw/                    # Diretório local temporário para arquivos brutos 
-├── scraping_b3.py              # Script principal de scraping
-├── requirements.txt            # Dependências Python
-├── .env.example                # Modelo de variáveis de ambiente
-├── .gitignore                  # Arquivos ignorados pelo Git
+│   └── raw/                     # Diretório local temporário para arquivos brutos 
+├── img/ 
+│   └── arquitetura_pipeline.jpg # Desenho da arquitetura do pipeline 
+├── scraping_b3.py               # Script principal de scraping
+├── requirements.txt             # Dependências Python
+├── .env.example                 # Modelo de variáveis de ambiente
+├── .gitignore                   # Arquivos ignorados pelo Git
 ├── README.md  
-└── pipeline_ibovespa_AWS.mp4   # Vídeo de demonstração                  
+└── pipeline_ibovespa_AWS.mp4    # Vídeo de demonstração                  
 ```
 
 ### 🏃 Executando o Pipeline
